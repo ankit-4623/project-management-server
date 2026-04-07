@@ -21,6 +21,13 @@ app.use('/api/inngest',serve({
   functions
 }))
 
+app.get('/', async (req, res) => {
+  res.send('server is up and running')
+})
+
+app.get('/health', (req, res) => {
+  res.send('server health is ok and it is up and running')
+});
 
 
 const PORT = process.env.PORT
