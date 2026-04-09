@@ -50,7 +50,6 @@ const syncWorkspaceCreation = inngest.createFunction(
   },
   async ({ event, step }) => {
     const { data } = event;
-    console.log(data);
     await prisma.workspace.create({
       data: {
         id: data.id,
@@ -60,14 +59,14 @@ const syncWorkspaceCreation = inngest.createFunction(
         image_url: data.image_url,
       },
     });
-    
-  await prisma.workspaceMember.create({
-    data: {
-      userId: data.created_by,
-      workspaceId: data.id,
-      role: "ADMIN",
-    },
-  })
+
+    await prisma.workspaceMember.create({
+      data: {
+        userId: data.created_by,
+        workspaceId: data.id,
+        role: "ADMIN",
+      },
+    });
   },
 );
 
@@ -99,8 +98,6 @@ const syncWorkspaceDeletion = inngest.createFunction(
     });
   },
 );
-
-
 
 export const functions = [
   syncUserCreation,
