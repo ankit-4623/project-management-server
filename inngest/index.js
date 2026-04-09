@@ -60,14 +60,15 @@ const syncWorkspaceCreation = inngest.createFunction(
         image_url: data.image_url,
       },
     });
-  },
+    
   await prisma.workspaceMember.create({
     data: {
       userId: data.created_by,
       workspaceId: data.id,
       role: "ADMIN",
     },
-  }),
+  })
+  },
 );
 
 const syncWorkspaceUpdatetion = inngest.createFunction(
