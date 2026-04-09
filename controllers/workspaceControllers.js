@@ -30,6 +30,7 @@ export const getAllWorkspaces = async(req,res) => {
       },
       
     })
+    res.json({workspaces})
   } catch(error) {
     res.status(500).json({ error: error.message });
   }
