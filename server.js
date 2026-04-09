@@ -16,10 +16,8 @@ app.use(cors(
     credentials: true,
   }
 ));
-app.use('/api/inngest',serve({
-  client: inngest, 
-  functions
-}))
+
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 app.get('/', async (req, res) => {
   res.send('server is up and running')
