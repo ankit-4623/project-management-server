@@ -70,20 +70,29 @@ export const createProject = async (req, res) => {
       },
     });
 
-    if (team_members.length > 0) {
+    if (team_members?.length > 0 && workspace?.members?.length > 0) {
+      const emailSet = new Set(team_members);
       const membersToAdd = [];
-      workspace.members.forEach((mem) => {
-        if (team_members.includes(mem.user.email)) {
+    
+      for (const mem of workspace.members) {
+        if (!mem?.user?.email || !mem?.user?.id) continue;
+    
+        if (emailSet.has(mem.user.email)) {
           membersToAdd.push(mem.user.id);
         }
-      });
-
-      await prisma.projectMember.createMany({
-        data: membersToAdd.map((mem) => ({
-          userId: mem,
-          projectId: project.id,
-        })),
-      });
+      }
+    
+      const uniqueMembers = [...new Set(membersToAdd)];
+    
+      if (uniqueMembers.length > 0) {
+        await prisma.projectMember.createMany({
+          data: uniqueMembers.map((userId) => ({
+            userId,
+            projectId: project.id,
+          })),
+          skipDuplicates: true,
+        });
+      }
     }
 
     const projecwithmem = await prisma.project.findUnique({
@@ -220,3 +229,6 @@ export const addmemberToProject = async (req, res) => {
     res.status(500).json({ message: "Failed to add member", error });
   }
 };
+
+
+// delete project
