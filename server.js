@@ -6,6 +6,7 @@ import {inngest,functions} from './inngest/index.js'
 import cors from 'cors'
 import workspaceRouter from "./routes/workspaceRoute.js"
 import { protect } from "./middlewares/protect.js"
+import projectRouter from "./routes/projectRoute.js"
 
 configDotenv()
 const app = express()
@@ -30,6 +31,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use("/api/workspace", protect, workspaceRouter);
+app.use("/api/project", protect, projectRouter);
 
 const PORT = process.env.PORT
 
