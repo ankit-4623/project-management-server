@@ -23,6 +23,19 @@ export const createProject = async (req, res) => {
         members: { include: { user: true } },
       },
     });
+    
+    const start = new Date(start_date);
+    const end = new Date(end_date);
+    
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return res.status(400).json({ error: "Invalid date format" });
+    }
+    
+    if (start >= end) {
+      return res.status(400).json({
+        error: "Start date must be before end date",
+      });
+    }
 
     if (!workspace) {
       return res.status(404).json({ error: "Workspace not found" });
@@ -61,7 +74,7 @@ export const createProject = async (req, res) => {
       const membersToAdd = [];
       workspace.members.forEach((mem) => {
         if (team_members.includes(mem.user.email)) {
-          membersToAdd.puhs(mem.user.id);
+          membersToAdd.push(mem.user.id);
         }
       });
 
