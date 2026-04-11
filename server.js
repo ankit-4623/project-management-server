@@ -7,6 +7,7 @@ import cors from 'cors'
 import workspaceRouter from "./routes/workspaceRoute.js"
 import { protect } from "./middlewares/protect.js"
 import projectRouter from "./routes/projectRoute.js"
+import taskRouter from "./routes/taskRoute.js"
 
 configDotenv()
 const app = express()
@@ -32,6 +33,7 @@ app.get('/health', (req, res) => {
 
 app.use("/api/workspace", protect, workspaceRouter);
 app.use("/api/project", protect, projectRouter);
+app.use("/api/task", protect, taskRouter);
 
 const PORT = process.env.PORT
 
