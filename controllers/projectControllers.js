@@ -173,7 +173,6 @@ export const updateProject = async (req, res) => {
         status,
         start_date: start_date ? new Date(start_date) : null,
         end_date: end_date ? new Date(end_date) : null,
-        workspaceId,
         progress,
       },
     });
