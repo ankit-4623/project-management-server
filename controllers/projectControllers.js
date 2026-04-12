@@ -164,7 +164,8 @@ export const updateProject = async (req, res) => {
       }
     }
 
-    const project = await prisma.project.create({
+    const project = await prisma.project.update({
+      where:{id:projectId},
       data: {
         name,
         description,
