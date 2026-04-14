@@ -2,6 +2,7 @@ import { Inngest, step } from "inngest";
 import { prisma } from "../config/db.js";
 import { sendMailToUser } from "../config/nodemailer.js";
 
+
 export const inngest = new Inngest({ id: "projectmng" });
 
 const syncUserCreation = inngest.createFunction(
