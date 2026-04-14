@@ -81,50 +81,53 @@ export const addTask = async (req, res) => {
 export const updateTask = async (req, res) => {
   try {
     const { userId } = await req.auth();
+
     const task = await prisma.task.findUnique({
       where: { id: req.params.id },
+      include: { project: true },
     });
-    if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+
+    if (!task)         return res.status(404).json({ message: "Task not found" });
+    if (!task.project) return res.status(404).json({ message: "Project not found" });
+
+    if (task.project.team_lead !== userId) {
+      return res.status(403).json({ message: "You are not the team lead of this project" });
     }
-    const project = await prisma.project.findUnique({
-      where: { id: task.projectId },
-      include: {
-        members: {
-          include: {
-            user: true,
-          },
-        },
-      },
-    });
-    if (!project) {
-      return res.status(404).json({ message: "Project not found" });
-    } else if (project.team_lead !== userId) {
-      return res
-        .status(403)
-        .json({ message: "You are not the team lead of this project" });
+
+    const ALLOWED_FIELDS = ["title", "description", "priority", "assigneeId", "status"];
+    const changes = {};
+
+    for (const field of ALLOWED_FIELDS) {
+      if (req.body[field] !== undefined && req.body[field] !== task[field]) {
+        changes[field] = req.body[field];
+      }
+    }
+
+    if (req.body.due_date !== undefined) {
+      const incoming = new Date(req.body.due_date);
+      if (isNaN(incoming.getTime())) {
+        return res.status(400).json({ message: "Invalid due_date format" });
+      }
+      const existing = task.due_date ? new Date(task.due_date) : null;
+      if (!existing || incoming.getTime() !== existing.getTime()) {
+        changes.due_date = incoming;
+      }
+    }
+
+    if (Object.keys(changes).length === 0) {
+      return res.status(200).json({ message: "No changes detected", task });
     }
 
     const updatedTask = await prisma.task.update({
       where: { id: task.id },
-      data: {
-        title: req.body.title,
-        description: req.body.description,
-        priority: req.body.priority,
-        assigneeId: req.body.assigneeId,
-        status: req.body.status,
-        due_date: new Date(req.body.due_date),
-      },
+      data: changes,
     });
 
-    res
-      .status(200)
-      .json({ message: "Task updated successfully", task: updatedTask });
+    return res.status(200).json({ message: "Task updated successfully", task: updatedTask });
+
   } catch (error) {
-    res.status(500).json({
-      message: "error in updateTask",
-      error: error.message,
-    });
+    console.error("[updateTask]", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
