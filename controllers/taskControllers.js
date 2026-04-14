@@ -159,7 +159,7 @@ export const deleteTask = async (req, res) => {
         .status(403)
         .json({ message: "You are not the team lead of this project" });
     }
-    await prisma.task.delete({
+    await prisma.task.deleteMany({
       where: { id: { in: tasksIds } },
     });
     res.status(200).json({ message: "Task deleted successfully" });
