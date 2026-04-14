@@ -9,12 +9,12 @@ const transporter = nodemail.createTransport({
   },
 });
 
-export const sendMailToUser = async ({ to, subject, body }) => {
+export const sendMailToUser = async ({ to, subject, html }) => {
   const response = await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to,
     subject,
-    html: body,
+    html,
   });
   return response;
 };
