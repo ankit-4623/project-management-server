@@ -12,7 +12,7 @@ export const addTask = async (req, res) => {
       projectId,
       status,
       priority,
-      assignedId,
+      assigneeId,
       due_date,
     } = req.body;
     const origin = req.get("origin");
