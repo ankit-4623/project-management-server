@@ -14,7 +14,7 @@ export const sendMailToUser = async ({ to, subject, body }) => {
     from: process.env.EMAIL_USER,
     to,
     subject,
-    text: body,
+    html: body,
   });
   return response;
 };
