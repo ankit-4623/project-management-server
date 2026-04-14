@@ -132,9 +132,11 @@ const sendTaskAssignmentEmail = inngest.createFunction(
     await sendMailToUser({
       to: task.assignee.email,
       subject: `New Task Assigned: ${task.project.name}`,
-      body: `Hi ${task.assignee.name},You have been assigned to a task - ${task.title} in the project - ${task.project.name}.
-            <a href="${origin}">view task</a>
-            `,
+      html: `
+          <p>Hi ${task.assignee.name},</p>
+          <p>You have been assigned to a task - <b>${task.title}</b> in the project - <b>${task.project.name}</b>.</p>
+          <a href="${origin}">View Task</a>
+        `,
     });
 
     if (
@@ -155,9 +157,11 @@ const sendTaskAssignmentEmail = inngest.createFunction(
             await sendEmail({
               to: task.assignee.email,
               subject: `Task Due Soon: ${task.project.name}`,
-              body: `Hi ${task.assignee.name},Your task - ${task.title} is due on ${task.due_date.toLocaleDateString()}.
-                      <a href="${origin}}">view task</a>
-                      `,
+              html: `
+                  <p>Hi ${task.assignee.name},</p>
+                  <p>You have been assigned to a task - <b>${task.title}</b> in the project - <b>${task.project.name}</b>.</p>
+                  <a href="${origin}">View Task</a>
+                `,
             });
           });
         }
