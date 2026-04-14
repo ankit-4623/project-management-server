@@ -49,6 +49,7 @@ export const addTask = async (req, res) => {
         description,
         priority,
         assignedId,
+        type,
         status,
         due_date: new Date(due_date),
       },
