@@ -34,8 +34,8 @@ export const addTask = async (req, res) => {
         .status(403)
         .json({ message: "You are not the team lead of this project" });
     } else if (
-      assignedId &&
-      !project.members.find((mem) => mem.userId === assignedId)
+      assigneeId &&
+      !project.members.find((mem) => mem.userId === assigneeId)
     ) {
       return res
         .status(403)
@@ -111,7 +111,7 @@ export const updateTask = async (req, res) => {
         title: req.body.title,
         description: req.body.description,
         priority: req.body.priority,
-        assignedId: req.body.assignedId,
+        assigneeId: req.body.assigneeId,
         status: req.body.status,
         due_date: new Date(req.body.due_date),
       },
