@@ -217,7 +217,7 @@ export const addmemberToProject = async (req, res) => {
           return res.status(404).json({ error: "User not found" });
         }
   
-    await prisma.projectMember.create({
+    const member = await prisma.projectMember.create({
       data: {
         userId: user.id,
         projectId
