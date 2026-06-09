@@ -1,8 +1,8 @@
 import express from "express"
 import { configDotenv } from "dotenv"
 import { serve } from "inngest/express"
-import { clerkMiddleware } from '@clerk/express'
-import {inngest,functions} from './inngest/index.js'
+import { clerkMiddleware, requireAuth } from '@clerk/express'
+import { inngest, functions } from './inngest/index.js'
 import cors from 'cors'
 import workspaceRouter from "./routes/workspaceRoute.js"
 import { protect } from "./middlewares/protect.js"
@@ -12,14 +12,15 @@ import taskRouter from "./routes/taskRoute.js"
 configDotenv()
 const app = express()
 app.use(express.json())
-app.use(clerkMiddleware())
-
+const allowedOrigins = process.env.FRONTEND_URL
 app.use(cors(
   {
-    origin:process.env.FRONTEND_URL,
+    origin: [allowedOrigins],
     credentials: true,
   }
 ));
+app.use(clerkMiddleware())
+app.use(requireAuth())
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
@@ -31,7 +32,7 @@ app.get('/health', (req, res) => {
   res.send('server health is ok and it is up and running')
 });
 
-app.use("/api/workspace", protect, workspaceRouter);
+app.use("/api/workspace", requireAuth(), workspaceRouter);
 app.use("/api/project", protect, projectRouter);
 app.use("/api/task", protect, taskRouter);
 

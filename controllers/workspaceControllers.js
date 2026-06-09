@@ -1,8 +1,11 @@
+import { clerkClient, getAuth } from "@clerk/express";
 import { prisma } from "../config/db.js";
 // get all workspaces
 export const getAllWorkspaces = async (req, res) => {
   try {
-    const { userId } = await req.auth();
+    const { userId } = await getAuth(req);
+     const user = await clerkClient.users.getUser(userId)
+     console.log(user)
     const workspaces = await prisma.workspace.findMany({
       where: {
         members: {
